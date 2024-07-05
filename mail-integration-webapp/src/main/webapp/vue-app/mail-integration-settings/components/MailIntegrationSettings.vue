@@ -15,17 +15,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-app v-if="mailIntegrationEnabled && displayed">
+  <v-app v-show="displayApplication">
     <v-card
-      class="card-border-radius pa-5"
+      v-if="displayApplication"
+      class="application-body pa-5"
       flat>
-      <v-list two-line>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title class="title text-color">
+      <v-list class="pa-0" two-line>
+        <v-list-item class="pa-0">
+          <v-list-item-content class="pa-0">
+            <v-list-item-title class="text-title">
               {{ $t('mailIntegration.settings.connectMail.label') }}
             </v-list-item-title>
-            <v-list-item-subtitle class="my-3 text-sub-title font-italic">
+            <v-list-item-subtitle class="my-3">
               {{ $t('mailIntegration.settings.connectMail.description') }}
             </v-list-item-subtitle>
             <v-list-item-subtitle :title="displayAccountTooltip">
@@ -51,24 +52,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </v-list>
     </v-card>
     <mail-integration-settings-drawer
+      v-if="displayApplication"
       ref="mailIntegrationSettingDrawer"
       :edit-mode="editMode"
       :mail-integration-setting="mailIntegrationSetting"
       @display-alert="displayAlert"
       @mail-integration-settings-save-success="getMailIntegrationSettings" />
     <exo-confirm-dialog
+      v-if="displayApplication"
       ref="deleteConfirmDialog"
       :message="$t('mailIntegration.settings.message.confirmDeleteMail')"
       :title="$t('mailIntegration.settings.title.confirmDeleteMail')"
       :ok-label="$t('mailIntegration.settings.ok')"
       :cancel-label="$t('mailIntegration.settings.cancel')"
       @ok="deleteMailIntegrationSetting" />
-    <mail-integration-alert />
+    <mail-integration-alert
+      v-if="displayApplication" />
   </v-app>
 </template>
-
 <script>
-
 export default {
   data: () => ({
     mailIntegrationEnabled: false,
@@ -81,7 +83,18 @@ export default {
   computed: {
     displayAccountTooltip() {
       return `${this.emailName} ${this.account}`;
-    }
+    },
+    displayApplication() {
+      return this.mailIntegrationEnabled && this.displayed;
+    },
+  },
+  watch: {
+    displayApplication: {
+      immediate: true,
+      handler() {
+        this.$root.$updateApplicationVisibility(!!this.displayApplication, this.$el);
+      },
+    },
   },
   created() {
     this.$featureService.isFeatureEnabled('mailIntegration')
@@ -95,9 +108,10 @@ export default {
       }
     });
     document.addEventListener('showSettingsApps', () => this.displayed = true);
+    this.$root.$updateApplicationVisibility(!!this.displayApplication, this.$el);
   },
   methods: {
-    openDrawer(){
+    openDrawer() {
       this.$refs.mailIntegrationSettingDrawer.openDrawer();
     },
     getMailIntegrationSettings() {

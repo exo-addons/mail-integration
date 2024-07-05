@@ -20,7 +20,7 @@
               elevation="0"
               small
               @click="clickMailNotification()">
-              <span class="text-none">{{$t('mailIntegration.notification.button.view')}}</span>
+              <span class="text-none">{{ $t('mailIntegration.notification.button.view') }}</span>
             </v-btn>
           </div>
         </template>
