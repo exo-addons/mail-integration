@@ -35,26 +35,27 @@
     </changeSet>
 
     <changeSet author="mail-integration" id="1.0.0-1">
+        <validCheckSum>ANY</validCheckSum>
         <createTable tableName="MAIL_INTEGRATION_SETTING">
             <column name="MAIL_INTEGRATION_SETTING_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK_MAIL_INTEGRATION_SETTING"/>
             </column>
-            <column name="NAME" type="NVARCHAR(2000)">
+            <column name="NAME" type="VARCHAR(2000)">
                 <constraints nullable="false"/>
             </column>
-            <column name="IMAP_URL" type="NVARCHAR(2000)">
+            <column name="IMAP_URL" type="VARCHAR(2000)">
                 <constraints nullable="false"/>
             </column>
             <column name="PORT" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="ENCRYPTION" type="NVARCHAR(2000)">
+            <column name="ENCRYPTION" type="VARCHAR(2000)">
                 <constraints nullable="false"/>
             </column>
-            <column name="ACCOUNT" type="NVARCHAR(2000)">
+            <column name="ACCOUNT" type="VARCHAR(2000)">
                 <constraints nullable="false"/>
             </column>
-            <column name="PASSWORD" type="NVARCHAR(2000)">
+            <column name="PASSWORD" type="VARCHAR(2000)">
                 <constraints nullable="false"/>
             </column>
             <column name="USER_ID" type="BIGINT">
@@ -62,8 +63,12 @@
             </column>
         </createTable>
         <modifySql dbms="mysql">
-            <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
+            <append value=" ENGINE=INNODB CHARSET=UTF8MB4 COLLATE utf8mb4_0900_ai_ci"/>
         </modifySql>
     </changeSet>
-
+    <changeSet author="mail-integration" id="1.0.0-2" >
+        <sql dbms="mysql">
+            ALTER TABLE MAIL_INTEGRATION_SETTING CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
